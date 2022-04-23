@@ -9,6 +9,7 @@
            v-on:click="$router.push(link.route)"
            text
            :value="link.label"
+           class="fill-height"
     >
       <span>
          {{ link.label }}
