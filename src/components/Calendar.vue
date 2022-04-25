@@ -1,14 +1,14 @@
 <template>
   <v-container>
-    <v-row class="align-center">
-      <v-select></v-select>
-      <v-btn text small>
-        <v-icon>mdi-chevron-left</v-icon>
-      </v-btn>
-      <v-btn text small>
-        <v-icon>mdi-chevron-right</v-icon>
-      </v-btn>
-    </v-row>
+<!--    <v-row class="align-center">-->
+<!--      <v-select></v-select>-->
+<!--      <v-btn text small>-->
+<!--        <v-icon>mdi-chevron-left</v-icon>-->
+<!--      </v-btn>-->
+<!--      <v-btn text small>-->
+<!--        <v-icon>mdi-chevron-right</v-icon>-->
+<!--      </v-btn>-->
+<!--    </v-row>-->
     <v-sheet height="250"
              color="#F4F4F4"
              id="v-sheet-calendar"
@@ -19,13 +19,13 @@
           :weekdays="weekdays"
           :weekday-format="getFormattedWeekday"
           type="month"
-          :color=todayColor
+          :color="todayColor"
           :show-month-on-first="false"
       >
 
         <template v-slot:day="{date}">
           <template v-if="isBlockedDate(date)">
-            <v-row class="v-blocked-date  py-1   justify-center">
+            <v-row class="v-blocked-date  py-1 justify-center">
               <div class="fill-height"></div>
             </v-row>
           </template>
@@ -47,11 +47,15 @@ import {mapActions, mapGetters, mapState} from "vuex";
 
 export default {
   name: "Calendar",
+  data() {
+    return {
+      'selectedDate': this.$store.state.calendar.selectedDate
+    }
+  },
   computed: {
     ...mapState('calendar', [
-        'selectedDateColor',
+        'todayColor',
         'weekdays',
-        'selectedDate'
     ]),
     ...mapGetters('calendar', [
        'getFormattedWeekday'
@@ -119,12 +123,17 @@ div.v-calendar-weekly__day.v-blocked-date-card {
   background-color: #EAEAEA;
 }
 
+div.v-calendar-weekly__day .v-blocked-date {
+  background-color: #EAEAEA;
+}
+
 div.v-calendar-weekly__head-weekday {
   background-color: #F4F4F4 ;
   color: #19181A !important;
   font-weight: bold;
   border-right: none !important;
   text-transform: capitalize;
+  font-size: 13px;
 }
 
 div.v-calendar-weekly__head-weekday.v-outside {
@@ -164,7 +173,6 @@ button.v-btn--fab.v-size--small {
 div.v-calendar-weekly__day.v-present .v-calendar-weekly__day-label .v-btn__content{
   color: #6153FF;
 }
-
 
 .slashed{
   border-bottom: 1px solid red;

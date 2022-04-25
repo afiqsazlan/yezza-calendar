@@ -1,10 +1,10 @@
 <template>
   <v-container class="px-0 pt-0">
-    <v-container class="px-6 pt-10 lighten-3"
+    <v-container class="px-4 pt-10 lighten-3"
                  style="background-color: #F4F4F4"
     >
 
-      <v-row class="align-center justify-space-between px-3 pb-8">
+      <v-row class="align-center justify-space-between px-5 pb-8">
         <h1>
           Calendar
         </h1>
@@ -13,7 +13,7 @@
 
       <Calendar></Calendar>
     </v-container>
-    <v-container class="px-10">
+    <v-container class="px-7">
       <v-list>
         <template v-for="(item,index) in items">
 
@@ -23,7 +23,7 @@
                 <v-list-item-title class="font-weight-bold" v-text="item.name"></v-list-item-title>
               </v-list-item-content>
               <v-list-item-action>
-                <v-list-item-action-text>
+                <v-list-item-action-text style="color: #333333">
                   {{ item.isPaid ? 'Paid' : 'Unpaid' }}
                 </v-list-item-action-text>
               </v-list-item-action>
