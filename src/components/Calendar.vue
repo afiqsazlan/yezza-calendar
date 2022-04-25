@@ -1,14 +1,27 @@
 <template>
   <v-container>
-<!--    <v-row class="align-center">-->
-<!--      <v-select></v-select>-->
-<!--      <v-btn text small>-->
-<!--        <v-icon>mdi-chevron-left</v-icon>-->
-<!--      </v-btn>-->
-<!--      <v-btn text small>-->
-<!--        <v-icon>mdi-chevron-right</v-icon>-->
-<!--      </v-btn>-->
-<!--    </v-row>-->
+    <v-row class="mb-5 align-center  justify-space-between ">
+        <div class=" ml-5 font-weight-bold">
+          {{ currentMonthName }} {{ currentYear }}
+        </div>
+        <div class="right-text mr-2">
+          <v-btn @click="$refs.calendar.prev()"
+                 text
+                 small
+                 class="calendar-navigation-arrow"
+          >
+            <v-icon color="#3E3E3E"  dense>mdi-chevron-left</v-icon>
+          </v-btn>
+          <v-btn @click="$refs.calendar.next()"
+                 text
+                 small
+                 class="calendar-navigation-arrow"
+          >
+            <v-icon color="#3E3E3E" dense>mdi-chevron-right</v-icon>
+          </v-btn>
+        </div>
+    </v-row>
+
     <v-sheet height="250"
              color="#F4F4F4"
              id="v-sheet-calendar"
@@ -21,11 +34,12 @@
           type="month"
           :color="todayColor"
           :show-month-on-first="false"
+          @change="onCalendarChange"
       >
 
         <template v-slot:day="{date}">
           <template v-if="isBlockedDate(date)">
-            <v-row class="v-blocked-date  py-1 justify-center">
+            <v-row class="v-blocked-date justify-center">
               <div class="fill-height"></div>
             </v-row>
           </template>
@@ -54,11 +68,13 @@ export default {
   },
   computed: {
     ...mapState('calendar', [
-        'todayColor',
-        'weekdays',
+      'todayColor',
+      'weekdays',
+        'currentMonthName',
+        'currentYear'
     ]),
     ...mapGetters('calendar', [
-       'getFormattedWeekday'
+      'getFormattedWeekday'
     ]),
     events() {
       return this.$store.getters["calendar/events"];
@@ -69,6 +85,8 @@ export default {
     this.$store.dispatch('calendar/fetchBlockedDates');
     this.$store.dispatch('calendar/fetchReservedDates');
 
+    this.$refs.calendar.checkChange();
+
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === 'calendar/updateReservedDates') {
         this.addClassToReservedDateCards()
@@ -78,6 +96,10 @@ export default {
       }
     })
 
+  },
+
+  updated() {
+    this.addClassToBlockedDateCards()
   },
 
   methods: {
@@ -104,7 +126,13 @@ export default {
         const parent = date.closest('.v-calendar-weekly__day');
         parent.className += ' v-blocked-date-card'
       }
-    }
+    },
+
+    onCalendarChange(payload) {
+      this.$store.dispatch('calendar/setCurrentMonth', payload.start.month)
+      this.$store.dispatch('calendar/setCurrentYear', payload.start.year)
+    },
+
   },
 }
 </script>
@@ -116,19 +144,11 @@ export default {
 }
 
 div.v-calendar-weekly__week {
-  background-color: #F4F4F4 ;
-}
-
-div.v-calendar-weekly__day.v-blocked-date-card {
-  background-color: #EAEAEA;
-}
-
-div.v-calendar-weekly__day .v-blocked-date {
-  background-color: #EAEAEA;
+  background-color: #F4F4F4;
 }
 
 div.v-calendar-weekly__head-weekday {
-  background-color: #F4F4F4 ;
+  background-color: #F4F4F4;
   color: #19181A !important;
   font-weight: bold;
   border-right: none !important;
@@ -137,7 +157,7 @@ div.v-calendar-weekly__head-weekday {
 }
 
 div.v-calendar-weekly__head-weekday.v-outside {
-  background-color: #F4F4F4 ;
+  background-color: #F4F4F4;
   color: #19181A !important;
   font-weight: bold;
   border-right: none !important;
@@ -150,6 +170,10 @@ div.v-calendar-weekly__day-label {
 button.v-btn--fab.v-size--small {
   height: 30px;
   width: 30px;
+}
+
+button.v-btn--active::before {
+  background-color: transparent;
 }
 
 .theme--light.v-calendar-weekly.v-calendar-weekly__head-weekday {
@@ -170,14 +194,32 @@ button.v-btn--fab.v-size--small {
   font-weight: lighter;
 }
 
-div.v-calendar-weekly__day.v-present .v-calendar-weekly__day-label .v-btn__content{
+div.v-calendar-weekly__day.v-present .v-calendar-weekly__day-label .v-btn__content {
   color: #6153FF;
 }
 
-.slashed{
+.slashed {
   border-bottom: 1px solid red;
   width: 50%;
   transform: rotate(45deg);
   transform-origin: top left;
 }
+
+button.calendar-navigation-arrow::before {
+  background-color: transparent;
+}
+
+
+div.v-calendar-weekly__day.v-blocked-date-card {
+  background-color: #EAEAEA;
+}
+
+div.v-calendar-weekly__day.v-blocked-date-card .v-btn__content {
+  color: #C1C1C1;
+}
+
+div.v-calendar-weekly__day .v-blocked-date {
+  background-color: #EAEAEA;
+}
+
 </style>

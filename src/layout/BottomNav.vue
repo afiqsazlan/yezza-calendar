@@ -2,7 +2,7 @@
   <v-bottom-navigation v-model="value"
                        grow
                        id="bottom-nav"
-                       class="elevation-0 light"
+                       class="elevation-0 light px-2"
   >
     <v-btn v-for="link in links"
            :key="link.label"

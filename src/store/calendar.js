@@ -4,9 +4,12 @@ const Calendar = {
     namespaced: true,
     state: () => ({
         todayColor: 'transparent',
+        currentMonthName: null,
+        currentYear: null,
         selectedDate: null,
         weekdays: [1, 2, 3, 4, 5, 6, 0],
         weekdaysShortNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+        monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
         reservedDates: [],
         blockedDates: []
     }),
@@ -17,6 +20,12 @@ const Calendar = {
         updateBlockedDates(state, dates) {
             state.blockedDates = dates;
         },
+        updateCurrentMonthName(state, monthName) {
+            state.currentMonthName = monthName;
+        },
+        updateCurrentYear(state, year) {
+            state.currentYear = year;
+        }
     },
     actions: {
         async fetchReservedDates({commit}) {
@@ -74,6 +83,23 @@ const Calendar = {
                     commit('updateBlockedDates', dates)
                 }
             }
+        },
+        setCurrentMonth({state, commit}, monthIndex) {
+
+            return new Promise((resolve, reject) => {
+                const monthName = state.monthNames[monthIndex - 1];
+
+                if (monthName) {
+                    commit('updateCurrentMonthName', monthName)
+                    resolve();
+                } else {
+                    reject();
+                }
+            });
+
+        },
+        setCurrentYear({commit}, year) {
+            commit('updateCurrentYear', year)
         }
     },
     getters: {
