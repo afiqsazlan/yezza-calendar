@@ -25,6 +25,10 @@ const Calendar = {
         },
         updateCurrentYear(state, year) {
             state.currentYear = year;
+        },
+        updateSelectedDate(state, date) {
+            state.selectedDate = date;
+            localStorage.setItem('selectedDate', date);
         }
     },
     actions: {
@@ -100,6 +104,13 @@ const Calendar = {
         },
         setCurrentYear({commit}, year) {
             commit('updateCurrentYear', year)
+        },
+        setSelectedDate({commit}, date) {
+            commit('updateSelectedDate', date)
+        },
+        setSelectedDateFromLocalStorage({commit}) {
+            const date = localStorage.getItem('selectedDate');
+            if (date !== 'undefined') commit('updateSelectedDate', date)
         }
     },
     getters: {
@@ -121,7 +132,7 @@ const Calendar = {
             }
 
             return events;
-        }
+        },
     }
 }
 

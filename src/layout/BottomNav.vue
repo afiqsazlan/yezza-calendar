@@ -6,16 +6,20 @@
   >
     <v-btn v-for="link in links"
            :key="link.label"
-           v-on:click.prevent="goTo(link.route)"
+           v-on:click.prevent="goTo(link.routeName)"
            text
-           :value="link.label"
+           :value="currentRouteName"
            class="fill-height pt-5"
     >
-      <span class="bottom-nav-menu-label pt-1">
+      <span class="bottom-nav-menu-label pt-1"
+            :style="getLabelStyle(link.routeName)"
+      >
          {{ link.label }}
       </span>
 
-      <v-icon>${{ link.iconName }}</v-icon>
+      <v-icon :color="getIconColor(link.routeName)">
+        ${{ link.iconName }}
+      </v-icon>
     </v-btn>
   </v-bottom-navigation>
 </template>
@@ -26,46 +30,75 @@ export default {
   name: "BottomNav",
   data() {
     return {
+
+      currentRouteName: null,
+
       svg: require('@/assets/logo.svg'),
       value: 'Home',
       links: [
         {
+          name: 'home',
           label: 'Home',
-          route: '/',
+          routeName: 'home',
           iconName: 'navHome'
         },
         {
+          name: 'calendar',
           label: 'Calendar',
-          route: '/calendar',
+          routeName: 'calendar',
           iconName: 'navCalendar'
         },
         {
+          name: 'request',
           label: 'Request',
-          route: null,
+          routeName: 'request',
           iconName: 'navRequest'
         },
         {
+          name: 'client',
           label: 'Client',
-          route: null,
+          routeName: 'client',
           iconName: 'navClient'
         },
         {
+          name: 'menu',
           label: 'Menu',
-          route: null,
+          routeName: 'menu',
           iconName: 'navMenu'
         },
       ]
     }
   },
+  created() {
+    this.setCurrentRouteName()
+  },
   methods: {
-    goTo(route) {
+    goTo(routeName) {
 
-      if (this.$router.currentRoute.fullPath === route) return;
+      if (this.currentRouteName === routeName) return;
 
-      this.$router.push(route).catch(failure => {
-        console.log('Unable to navigate there.')
+      this.$router.push({name: routeName}).catch(failure => {
+        console.log('Unable to navigate there. Redirected to /calendar')
       })
+
+      this.setCurrentRouteName()
     },
+    setCurrentRouteName() {
+      this.currentRouteName = this.$router.currentRoute.name;
+    },
+    isCurrentRoute(routeName) {
+      return this.currentRouteName === routeName;
+    },
+    getLabelStyle(routeName) {
+      return this.isCurrentRoute(routeName)
+          ? {color: '#2B2525'}
+          : {color: '#848484'}
+    },
+    getIconColor(routeName) {
+      return this.isCurrentRoute(routeName)
+          ? '#2B2525'
+          : '#848484'
+    }
   }
 }
 </script>

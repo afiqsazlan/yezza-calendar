@@ -9,12 +9,27 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    redirect: {name: 'calendar'}
+    component: HomeView
   },
   {
     path: '/calendar',
     name: 'calendar',
     component: CalendarView
+  },
+  {
+    path: '/request',
+    name: 'request',
+    redirect: {name: 'calendar'}
+  },
+  {
+    path: '/client',
+    name: 'client',
+    redirect: {name: 'calendar'}
+  },
+  {
+    path: '/menu',
+    name: 'menu',
+    redirect: {name: 'calendar'}
   }
 ]
 
