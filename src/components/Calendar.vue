@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row class="align-center mb-4">
+    <v-row class="align-center">
       <v-select></v-select>
       <v-btn text small>
         <v-icon>mdi-chevron-left</v-icon>
@@ -9,23 +9,24 @@
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </v-row>
-    <v-sheet height="300"
+    <v-sheet height="250"
              color="#F4F4F4"
              id="v-sheet-calendar"
     >
       <v-calendar
           ref="calendar"
           v-model="selectedDate"
-          :weekdays="weekdaysFormat"
+          :weekdays="weekdays"
+          :weekday-format="getFormattedWeekday"
           type="month"
-          :color=selectedDateColor
+          :color=todayColor
           :show-month-on-first="false"
       >
 
         <template v-slot:day="{date}">
           <template v-if="isBlockedDate(date)">
             <v-row class="v-blocked-date  py-1   justify-center">
-              <div>.</div>
+              <div class="fill-height"></div>
             </v-row>
           </template>
           <template v-if="isReservedDate(date)">
@@ -34,18 +35,6 @@
             </v-row>
           </template>
         </template>
-
-        <!--
-        <template v-slot:event="{event}">
-                  <v-row class="fill-height justify-center"
-                         :class="event.class"
-                  >
-                    <template  v-if="event.name === 'reserved'">
-                      <v-icon>mdi-circle-small</v-icon>
-                    </template>
-                  </v-row>
-                </template>
-                -->
 
       </v-calendar>
     </v-sheet>
@@ -61,8 +50,11 @@ export default {
   computed: {
     ...mapState('calendar', [
         'selectedDateColor',
-        'weekdaysFormat',
+        'weekdays',
         'selectedDate'
+    ]),
+    ...mapGetters('calendar', [
+       'getFormattedWeekday'
     ]),
     events() {
       return this.$store.getters["calendar/events"];
@@ -98,9 +90,7 @@ export default {
         const date = reservedDates[i];
         const parent = date.closest('.v-calendar-weekly__day');
         parent.className += ' v-reserved-date-card'
-        console.log({parent})
       }
-      console.log({reservedDates})
     },
     async addClassToBlockedDateCards() {
       const blockedDates = document.getElementsByClassName('v-blocked-date')
@@ -109,9 +99,7 @@ export default {
         const date = blockedDates[i];
         const parent = date.closest('.v-calendar-weekly__day');
         parent.className += ' v-blocked-date-card'
-        console.log({parent})
       }
-      console.log({blockedDates})
     }
   },
 }
@@ -123,11 +111,39 @@ export default {
   border: none !important;
 }
 
-div.v-blocked-date-card {
+div.v-calendar-weekly__week {
+  background-color: #F4F4F4 ;
+}
+
+div.v-calendar-weekly__day.v-blocked-date-card {
   background-color: #EAEAEA;
 }
 
-.theme--light.v-calendar-weekly .v-calendar-weekly__head-weekday {
+div.v-calendar-weekly__head-weekday {
+  background-color: #F4F4F4 ;
+  color: #19181A !important;
+  font-weight: bold;
+  border-right: none !important;
+  text-transform: capitalize;
+}
+
+div.v-calendar-weekly__head-weekday.v-outside {
+  background-color: #F4F4F4 ;
+  color: #19181A !important;
+  font-weight: bold;
+  border-right: none !important;
+}
+
+div.v-calendar-weekly__day-label {
+  padding: 0;
+}
+
+button.v-btn--fab.v-size--small {
+  height: 30px;
+  width: 30px;
+}
+
+.theme--light.v-calendar-weekly.v-calendar-weekly__head-weekday {
   background-color: #F4F4F4 !important;
   border-right: none !important;
 }
@@ -135,12 +151,19 @@ div.v-blocked-date-card {
 .theme--light.v-calendar-weekly .v-calendar-weekly__day {
   border-right: 0 !important;
 }
+
+.theme--light.v-calendar-weekly .v-calendar-weekly__day.v-outside {
+  background-color: #F4F4F4 !important;
+}
+
 .theme--light.v-calendar-weekly .v-calendar-weekly__day.v-outside button {
   color: #C1C1C1;
   font-weight: lighter;
 }
 
-
+div.v-calendar-weekly__day.v-present .v-calendar-weekly__day-label .v-btn__content{
+  color: #6153FF;
+}
 
 
 .slashed{

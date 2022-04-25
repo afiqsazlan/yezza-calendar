@@ -3,9 +3,10 @@ import axios from "axios";
 const Calendar = {
     namespaced: true,
     state: () => ({
-        selectedDateColor: 'grey',
+        todayColor: 'transparent',
         selectedDate: null,
-        weekdaysFormat: [1, 2, 3, 4, 5, 6, 0],
+        weekdays: [1, 2, 3, 4, 5, 6, 0],
+        weekdaysShortNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
         reservedDates: [],
         blockedDates: []
     }),
@@ -19,32 +20,56 @@ const Calendar = {
     },
     actions: {
         async fetchReservedDates({commit}) {
-            console.log('fetching reserved date')
 
+            const dates = [
+                "2022-04-07",
+                "2022-04-15",
+                "2022-05-08"
+            ]
+            commit('updateReservedDates', dates)
+
+            return;
             try {
                 const response = await axios.get('https://interviewtest.free.beeceptor.com/calendar/reserved_dates')
                 commit('updateReservedDates', response.data)
             } catch (e) {
                 if (e.response.status === 429) {
                     const dates = [
-                        '2022-04-20'
+                        "2022-04-07",
+                        "2022-04-15",
+                        "2022-05-08"
                     ]
                     commit('updateReservedDates', dates)
                 }
             }
         },
         async fetchBlockedDates({commit}) {
-            console.log('fetching blocked date')
 
+            const dates = [
+                "2022-04-04",
+                "2022-04-05",
+                "2022-04-06",
+                "2022-04-30",
+                "2022-05-01",
+                "2022-05-02",
+                "2022-05-03"
+            ]
+            commit('updateBlockedDates', dates)
+
+            return;
             try {
                 const response = await axios.get('https://interviewtest.free.beeceptor.com/calendar/blocked_dates')
                 commit('updateBlockedDates', response.data)
             } catch (e) {
                 if (e.response.status === 429) {
                     const dates = [
-                        '2022-04-15',
-                        '2022-04-16',
-                        '2022-04-17',
+                        "2022-04-04",
+                        "2022-04-05",
+                        "2022-04-06",
+                        "2022-04-30",
+                        "2022-05-01",
+                        "2022-05-02",
+                        "2022-05-03"
                     ]
                     commit('updateBlockedDates', dates)
                 }
@@ -52,10 +77,14 @@ const Calendar = {
         }
     },
     getters: {
+        getFormattedWeekday: (state) => ({date}) => {
+            const dayIndex = new Date(date).getDay(date);
+            return state.weekdaysShortNames[dayIndex];
+        },
         events(state) {
             const events = [];
 
-            for (let  i = 0; i < state.reservedDates.length; i++) {
+            for (let i = 0; i < state.reservedDates.length; i++) {
                 events.push({
                     name: 'reserved',
                     class: 'reserved-date',

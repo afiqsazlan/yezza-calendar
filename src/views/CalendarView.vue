@@ -1,10 +1,10 @@
 <template>
   <v-container class="px-0 pt-0">
-    <v-container class="px-8 pt-10 lighten-3"
+    <v-container class="px-6 pt-10 lighten-3"
                  style="background-color: #F4F4F4"
     >
 
-      <v-row class="align-center justify-space-between pb-8">
+      <v-row class="align-center justify-space-between px-3 pb-8">
         <h1>
           Calendar
         </h1>
