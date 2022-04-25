@@ -34,14 +34,6 @@ const Calendar = {
     actions: {
         async fetchReservedDates({commit}) {
 
-            const dates = [
-                "2022-04-07",
-                "2022-04-15",
-                "2022-05-08"
-            ]
-            commit('updateReservedDates', dates)
-
-            return;
             try {
                 const response = await axios.get('https://interviewtest.free.beeceptor.com/calendar/reserved_dates')
                 commit('updateReservedDates', response.data)
@@ -57,19 +49,6 @@ const Calendar = {
             }
         },
         async fetchBlockedDates({commit}) {
-
-            const dates = [
-                "2022-04-04",
-                "2022-04-05",
-                "2022-04-06",
-                "2022-04-30",
-                "2022-05-01",
-                "2022-05-02",
-                "2022-05-03"
-            ]
-            commit('updateBlockedDates', dates)
-
-            return;
             try {
                 const response = await axios.get('https://interviewtest.free.beeceptor.com/calendar/blocked_dates')
                 commit('updateBlockedDates', response.data)

@@ -88,10 +88,13 @@ export default {
     }
   },
 
-  mounted() {
-    this.$store.dispatch('calendar/fetchBlockedDates');
-    this.$store.dispatch('calendar/fetchReservedDates');
-    this.$store.dispatch('calendar/setSelectedDateFromLocalStorage')
+  async mounted() {
+    await this.$store.dispatch('calendar/fetchBlockedDates');
+    await this.$store.dispatch('calendar/fetchReservedDates');
+    await this.$store.dispatch('calendar/setSelectedDateFromLocalStorage')
+
+    await this.addClassToBlockedDateCards()
+    await this.updateSelectedDateCardClassList()
 
     this.$refs.calendar.checkChange();
 
@@ -123,7 +126,7 @@ export default {
     isSelectedDate(date) {
       return this.$store.state.calendar.selectedDate === date;
     },
-    async addClassToReservedDateCards() {
+    addClassToReservedDateCards() {
       const reservedDateElements = document.getElementsByClassName('v-reserved-date')
 
       for (let i = 0; i < reservedDateElements.length; i++) {
@@ -132,7 +135,7 @@ export default {
         parent.classList.add('v-reserved-date-card');
       }
     },
-    async addClassToBlockedDateCards() {
+    addClassToBlockedDateCards() {
       const blockedDateElements = document.getElementsByClassName('v-blocked-date')
 
       for (let i = 0; i < blockedDateElements.length; i++) {
@@ -142,7 +145,7 @@ export default {
       }
     },
 
-    async updateSelectedDateCardClassList() {
+    updateSelectedDateCardClassList() {
 
       const selectedDateCardElements = document.getElementsByClassName('v-selected-date-card');
 
